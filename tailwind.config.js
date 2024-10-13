@@ -1,3 +1,5 @@
+import colors from "tailwindcss/colors";
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -8,8 +10,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#C8F748",
+        secondary: "#EEEDEE",
+        tertiary: "#333337",
+        background: "#18171C",
+        cellbackground: "#1C1B22",
+        positive: "#C3D973",
+        negative: "#F2766B",
+        neutral: "#BBADFF",
       },
     },
   },

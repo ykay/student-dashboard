@@ -2,13 +2,15 @@
 
 import { useEffect, useState, useRef } from "react";
 import ReactMarkdown from 'react-markdown';
+import { useDispatch } from "react-redux";
+import { setVideo } from "@/lib/features/videoSlice";
 
 export default function Chat() {
   const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [conversation, setConversation] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const dispatch = useDispatch();
   const chatEndRef = useRef(null);
 
   const addMessage = (message) => {
@@ -21,6 +23,48 @@ export default function Chat() {
       message,
     ]);
   };
+
+  function CustomLink({ href, children }) {
+    const handleClick = (event) => {
+      event.preventDefault(); // Prevent the default link behavior 
+      // href e.g., "https://youtu.be/CvhcvM444Mw?si=gFaoEYSjpKBCdy0W"
+      // children e.g., "Week 5, Timestamp 1:00:00"
+      const videoId = extractVideoId(href);
+      const timestamp = getTimestampInSeconds(children)
+
+      dispatch(setVideo({ videoId: videoId, startTime: timestamp }));
+    };
+  
+    return (
+      <a href={href} onClick={handleClick} style={{ color: '#C8F748', cursor: 'pointer' }}>
+        {children}
+      </a>
+    );
+  }  
+
+  function extractVideoId(url) {
+    const regex = /youtu\.be\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
+
+  function getTimestampInSeconds(childrenString) {
+    // Regular expression to match the timestamp format HH:MM:SS or MM:SS
+    const timestampRegex = /(?:(\d{1,2}):)?(\d{1,2}):(\d{2})/;
+    const match = childrenString.match(timestampRegex);
+
+    if (match) {
+      const hours = match[1] ? parseInt(match[1], 10) : 0; // Default to 0 if hours are not present
+      const minutes = parseInt(match[2], 10);
+      const seconds = parseInt(match[3], 10);
+
+      const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+      return totalSeconds;
+    }
+    
+    return 0; // Default to beginning of video, 0, if no valid timestamp is found
+  }
 
   const scrollToBottom = () => {
     if (chatEndRef.current) {
@@ -47,7 +91,6 @@ export default function Chat() {
     addMessage({ message: question, sender: "user" });
 
     setSubmitted(true);
-    setResponse("");
     setQuestion("");
 
     // Handle the submitted question
@@ -107,7 +150,11 @@ export default function Chat() {
                 <div
                   className={`${msg.sender === "user" ? "rounded-bl-2xl rounded-br-2xl rounded-tl-2xl text-slate-300" : "rounded-br-2xl rounded-tl-2xl rounded-tr-2xl text-emerald-100"} max-w-[90%] bg-white/5 p-3 backdrop-blur-3xl sm:p-5`}
                 >
-                  <ReactMarkdown>{msg.message}</ReactMarkdown>
+                  <ReactMarkdown
+                  components={{
+                    a: CustomLink, // Use the custom link component
+                  }}
+                  >{msg.message}</ReactMarkdown>
                 </div>
               </div>
             ))}

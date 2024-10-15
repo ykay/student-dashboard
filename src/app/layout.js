@@ -1,3 +1,4 @@
+import StoreProvider from "@/app/StoreProvider";
 import { Afacad } from "next/font/google";
 import "./globals.css";
 
@@ -14,7 +15,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${mainFont.className}`}
       >
-        {children}
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );

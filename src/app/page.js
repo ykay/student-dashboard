@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import RandomQuiz from '@/components/RandomQuiz';
 import SummaryReport from '@/components/SummaryReport';
 import Chat from '@/components/Chat';
+import VideoPlayer from '@/components/VideoPlayer';
 
 export default function Home() {
   return (
@@ -13,11 +14,8 @@ export default function Home() {
       <div className="bg-cellbackground p-4 border-2 border-tertiary rounded-lg">
         <RandomQuiz />
       </div>
-      <div className="bg-cellbackground p-4 border-2 border-tertiary rounded-lg">
-        Item 2
-      </div>
-      <div className="bg-cellbackground p-4 border-2 border-tertiary rounded-lg">
-        Item 3
+      <div className="grid col-span-2">
+        <VideoPlayer />
       </div>
       <div className="grid col-span-2">
         <SummaryReport />
